@@ -10,12 +10,12 @@ You can edit the database parameters by editing the `./src/main/resources/static
 ```
 jdbc:mysql://<mysql-server-address>/<database-name> <mysql-username> <mysql-password>
 ```
-In the following example, the mysql server is running at `localhost:3306` and the `student` database can be accessed using the user name `voting` and password `app`:
+In the following example, the MySQL server is running at `localhost:3306` and the `student` database can be accessed using the user name `voting` and password `app`:
 ```
 jdbc:mysql://localhost:3306/student voting app
 ```
 ## Running the application
-The following caommand can be used to run the application:
+The following command can be used to run the application:
 ```
 ./mvn spring-boot:run
 ```
@@ -24,14 +24,18 @@ Once the application is started, you can access the voting app at: `http://local
 ## Architecture
 The website is built using Vue.js, a modern client-side framework, which interacts with RESTful APIs provided by the server. The server stores the requisite information for the application in a MySQL database.
 ### Client framework
-* Vue.js is used to render the UI for the application. It is installed by including its CDN (https://unpkg.com/vue@2.0.3/dist/vue.js) via the `<script>` HTML tag in the `index.html`.
-* Axios is used to invoke the RESTful HTTP APIs provided by the server. It is installed by including its CDN (https://unpkg.com/axios@0.12.0/dist/axios.min.js) as well
-* Lodash is used to modularize the Javascript code. This too is installed from its CDN (https://unpkg.com/lodash@4.13.1/lodash.min.js
-)
+#### Javascript frameworks
+The following Javascript frameworks are installed by including their respective CDNs via the `<script>` HTML tag in the `index.html`.
+* Vue.js is used to render the UI for the application: https://unpkg.com/vue@2.0.3/dist/vue.js
+* Axios is used to invoke the RESTful HTTP APIs provided by the server: https://unpkg.com/axios@0.12.0/dist/axios.min.js)
+* Lodash is used to modularize the Javascript code: https://unpkg.com/lodash@4.13.1/lodash.min.js
+
+#### Style sheets
 * Bootstrap CSS is used to manage the CSS settings (and to make things look nicer): https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css
 * styles.css and grid.css provide further customization of the user interface
 ### Server
-RESTful APIs provided by the server are implemented using the Java Spring framework. Maven is used to build and deploy the same.
+RESTful APIs provided by the server are implemented using the Java Spring framework. Maven is used to build and deploy the same via Spring Boot. The server uses the JDBC MySQL driver to connect to the database.
+
 #### APIs
 The following RESTful APIs are provided by the server:
 ##### 1. POST /vote
@@ -81,15 +85,15 @@ The `GET /students HTTP/1.1` method fetches the list of students from the databa
 }
 ```
 This method is used to populate the dropdown list of students in the application.
-### Datastore
-A MySQL database is used to recode the information regarding studens, fruits available and the votes of each student.
+### Data store
+A MySQL database is used to record the information regarding students, fruits available and the votes of each student. For example, an Amazon RDS instance can be used to host such a database.
 #### Database Schema
-The following tables store the information in the `student` database:
+The `student` database consists of the following tables:
 
 | Table Name | Description |
 |------------|-------------|
-| Student	| Stores information of all students eligible to vote |
-| Fruits 	| Stores all the fruits which are available for the students to vote |
-| StudentSelection | Stores the name of the students and their fruit selection |
+| `Student`	| Stores information of all students eligible to vote |
+| `Fruits` 	| Stores all the fruits which are available for the students to vote |
+| `StudentSelection` | Stores the name of the students and their fruit selection |
 
 The tables are designed to maintain the referential integrity and are normalized.
