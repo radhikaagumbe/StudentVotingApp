@@ -19,22 +19,26 @@ The following command can be used to run the application:
 ```
 ./mvn spring-boot:run
 ```
-Once the application is started, you can access the voting app at: `http://localhost:8080`
+Once the application is started, you can access the voting app at: http://localhost:8080
 ![app](./app.jpg)
 ## Architecture
 The website is built using Vue.js, a modern client-side framework, which interacts with RESTful APIs provided by the server. The server stores the requisite information for the application in a MySQL database.
 ### Client framework
 #### Javascript frameworks
-The following Javascript frameworks are installed by including their respective CDNs via the `<script>` HTML tag in the `index.html`.
+The following Javascript frameworks are installed by including their respective CDNs via the `<script>` HTML tag in the [`index.html`](./src/main/resources/static/index.html).
 * Vue.js is used to render the UI for the application: https://unpkg.com/vue@2.0.3/dist/vue.js
 * Axios is used to invoke the RESTful HTTP APIs provided by the server: https://unpkg.com/axios@0.12.0/dist/axios.min.js)
 * Lodash is used to modularize the Javascript code: https://unpkg.com/lodash@4.13.1/lodash.min.js
 
 #### Style sheets
 * Bootstrap CSS is used to manage the CSS settings (and to make things look nicer): https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css
-* styles.css and grid.css provide further customization of the user interface
+* [styles.css](./src/main/resources/static/styles.css) and [grid.css](./src/main/resources/static/grid.css) provide further customization of the user interface
+
+The client framework source code can be found at [./src/main/resources/static](./src/main/resources/static) directory
 ### Server
 RESTful APIs provided by the server are implemented using the Java Spring framework. Maven is used to build and deploy the same via Spring Boot. The server uses the JDBC MySQL driver to connect to the database.
+
+The source code for the server can be found at [./src/main/java/studentvote](./src/main/java/studentvote) directory
 
 #### APIs
 The following RESTful APIs are provided by the server:
