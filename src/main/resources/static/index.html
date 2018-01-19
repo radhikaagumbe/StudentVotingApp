@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Student Fruit Selection</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="grid.css">
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 col-md-offset-3">
+            <div class="lead-form">
+              <h1 class="text-center">Student Fruit Selection</h1>
+              <hr />
+              <div class="row">
+                <div class="col-md-6">
+                  <b>Student Name:</b>
+                  <!-- <input type="text" class="form-control" placeholder="Enter Name" v-model="studentName"> -->
+                  <select class="form-control" v-model=studentName>
+                    <option v-for="studentFName in studentList">
+                      {{ studentFName }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <b>Fruit:</b>
+                  <select v-model="fruit" class="form-control">
+                    <option v-for="fruitName in fruitList">
+                      {{ fruitName }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-14">
+                  <button @click="selection" class="btn btn-primary btn-block" id="submit-form">Submit</button>
+
+                </div>
+              </div>
+              <div class="row">
+              <div class="col-md-14 text-center">
+                <button @click="fetchthevote" class="btn btn-primary btn-block" id="submit-form">Show my vote</button>
+                   <h4> {{ myVote }}</h4>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-14">
+                <button @click="showVotes" class="btn btn-primary btn-block" id="submit-form">Show Votes</button>
+              </div>
+            </div>
+            <!-- demo root element -->
+            <div align="center">
+              <demo-grid
+              :data="fruitsVotes"
+              :columns="gridColumns"
+              :filter-key="searchQuery">
+            </demo-grid>
+          </div>
+
+       		 </div>
+          </div> 
+        </div> 
+      </div> 
+    </div> 
+  </body>
+
+  <script src="https://unpkg.com/vue@2.0.3/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios@0.12.0/dist/axios.min.js"></script>
+  <script src="https://unpkg.com/lodash@4.13.1/lodash.min.js"></script>
+ 
+  <!-- component template -->
+  <script type="text/x-template" id="grid-template">
+    <table>
+      <thead>
+        <tr>
+          <th v-for="key in columns"
+            @click="sortBy(key)"
+            :class="{ active: sortKey == key }">
+            {{ key | capitalize }}
+            <span>
+            </span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="entry in filteredData">
+          <td v-for="key in columns">
+            {{entry[key]}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </script>
+  
+  <script>
+  Vue.component('demo-grid', {
+	    template: '#grid-template',
+	    props: {
+	      data: Array,
+	      columns: Array,
+	      filterKey: String
+	    },
+	    data: function () {
+	      var sortOrders = {}
+	      this.columns.forEach(function (key) {
+	        sortOrders[key] = 1
+	      })
+	      return {
+	        sortKey: '',
+	        sortOrders: sortOrders
+	      }
+	    },
+	    computed: {
+	      filteredData: function () {
+	        var sortKey = this.sortKey
+	        var filterKey = this.filterKey && this.filterKey.toLowerCase()
+	        var order = this.sortOrders[sortKey] || 1
+	        var data = this.data
+	        if (filterKey) {
+	          data = data.filter(function (row) {
+	            return Object.keys(row).some(function (key) {
+	              return String(row[key]).toLowerCase().indexOf(filterKey) > -1
+	            })
+	          })
+	        }
+	        if (sortKey) {
+	          data = data.slice().sort(function (a, b) {
+	            a = a[sortKey]
+	            b = b[sortKey]
+	            return (a === b ? 0 : a > b ? 1 : -1) * order
+	          })
+	        }
+	        return data
+	      }
+	    },
+	    filters: {
+	      capitalize: function (str) {
+	        return str.charAt(0).toUpperCase() + str.slice(1)
+	      }
+	    },
+	    methods: {
+	      sortBy: function (key) {
+	        this.sortKey = key
+	        this.sortOrders[key] = this.sortOrders[key] * -1
+	      }
+	    }
+	  })
+
+
+	var app = new Vue({
+	      el: '#app',
+	      data: {
+	        studentName: '',
+	        fruit:'',
+	        message: "checking",
+	        fruitsVotes: [],
+	        searchQuery: '',
+	        gridColumns: [],
+	        fruitList: [],
+	        studentList: [],
+	   	    myVote: ''
+	      },
+
+	      methods: {
+	        selection: function(){
+	          axios.post('/vote', {
+	            name: app.studentName,
+	            fruit: app.fruit
+	          })
+	          .then(function(response){
+	              console.log(response)
+	              app.myVote = "You voted for "+app.fruit+"!"
+	          })
+	          .catch(function (error) {
+	            console.log(error)
+	         //             app.startingCity = "Invalid Zipcode"
+	       })
+	     },
+
+
+	     fetchthevote: function(){
+	      axios.get('/vote', {
+	        params: {
+	          name: app.studentName
+	        }
+	      }).then(function(response){
+	        console.log("response from fetchthevote: " + response.data)
+	        app.myVote = "You voted for "+response.data+"!"
+	      })
+	      .catch(function(error){
+	      	app.myVote = "You have not voted yet!",
+	        console.log("fetch the vote error: "+ error)
+	      })
+	    },
+
+
+	        showVotes: function(){
+	            axios.get('/votes')
+	            .then(function(response){
+	              console.log(response.data)
+	              console.log(response.data[0].fruit)
+	              console.log(response.data[0].votes)
+	              console.log(response.data.length)
+	              console.log("before" + app.fruitsVotes)
+	              app.fruitsVotes = response.data
+	              app.gridColumns = ['fruit', 'votes']
+	              console.log("after" + app.fruitsVotes)
+	            })
+	            .catch(function(error){
+	              console.log(error)
+	            })
+	        },
+
+	        populateFruits: function(){
+	          axios.get('/fruits')
+	          .then(function(response){
+	            app.fruitList = response.data
+	          })
+	          .catch(function(error){
+	            console.log(error)
+	          })
+	      },
+
+	      populateStudents: function(){
+	        axios.get('/students')
+	        .then(function(response){
+	          app.studentList = response.data
+	        })
+	        .catch(function(error){
+	          console.log(error)
+	        })
+	      }
+	      },
+
+	      mounted(){
+	          this.populateFruits(),
+	          this.populateStudents()
+	      }
+	    })
+
+  
+  </script>
+  
+</html>
