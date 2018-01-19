@@ -88,8 +88,8 @@ The following tables store the information in the `student` database:
 
 | Table Name | Description |
 |------------|-------------|
-| STUDENT	| Stores information of all students eligible to vote |
-| FRUITS 	| Stores all the fruits which are available for the students to vote |
+| Student	| Stores information of all students eligible to vote |
+| Fruits 	| Stores all the fruits which are available for the students to vote |
 | StudentSelection | Stores the name of the students and their fruit selection |
 
 The tables are designed to maintain the referential integrity and are normalized.
