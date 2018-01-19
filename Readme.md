@@ -85,6 +85,7 @@ This method is used to populate the dropdown list of students in the application
 A MySQL database is used to recode the information regarding studens, fruits available and the votes of each student.
 ### Database Schema
 The following tables store the information in the `student` database:
+
 | Table Name | Description |
 |------------|-------------|
 | STUDENT	| Stores information of all students eligible to vote |
